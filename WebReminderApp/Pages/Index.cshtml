@@ -1,0 +1,279 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+
+<!-- Modal -->
+<div class="modal fade" id="reminderModel" tabindex="-1" role="dialog" aria-labelledby="create" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp" placeholder="Enter your name">
+
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" id="title" name="title" aria-describedby="titleHelp" placeholder="Enter your title">
+
+                        <label for="Description">Description</label>
+                        <input type="text" class="form-control" id="description" name="description" aria-describedby="descriptionHelp" placeholder="Enter description">
+
+                        <label for="DueDate">DueDate</label>
+                        <input class="form-control" type="date" id="dueDate" name="dueDate" />
+
+                        <label for="DueDate">IsCompleted</label>
+                        <input type="checkbox" id="isCompleted" name="isCompleted" checked="@(1 == 0)" />
+                        <input type="hidden" id="id" name="id" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="btnAdd" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade model1" id="remindereditModel" tabindex="-1" role="dialog" aria-labelledby="remindereditlTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal1" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" id="editname" name="name" aria-describedby="nameHelp" placeholder="Enter your name">
+
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" id="edittitle" name="title" aria-describedby="titleHelp" placeholder="Enter your title">
+
+                        <label for="Description">Description</label>
+                        <input type="text" class="form-control" id="editdescription" name="description" aria-describedby="descriptionHelp" placeholder="Enter description">
+
+                        <label for="DueDate">DueDate</label>
+                        <input class="form-control" type="date" id="editdueDate" name="dueDate" />
+
+                        <label for="DueDate">IsCompleted</label>
+                        <input type="checkbox" id="editisCompleted" name="isCompleted" checked="@(1 == 0)" />
+                        <input type="hidden" id="id" name="id" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="btnUpdate" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="text-center">
+    <h1 class="display-4">ReminderList</h1>
+    <table class="table table-bordered" id="reminderTable">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Title
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    DueDate
+                </th>
+                <th>
+                    IsCompleted
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody class="tbody">
+        </tbody>
+    </table>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $.ajax({
+                type: "GET",
+                url: "/api/reminder/RemenderList",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(result) {
+                    debugger
+
+                    var html = '';
+                    $.each(result, function(index, value) {
+                        html += '<tr id="' + value.id + '">';
+                        html += '<td><a args="' + value.id + '" class="btn-edit name' + value.id + '" style="text-decoration: none;color:black">' + value.name + '</a></td>';
+                        html += '<td><a args="' + value.id + '" class="btn-edit  title' + value.id + '" style="text-decoration: none;color:black">' + value.title + '</a></td>';
+                        html += '<td><a args="' + value.id + '" class="btn-edit  description' + value.id + '" style="text-decoration: none;color:black">' + value.description + '</a></td>';
+                        html += '<td><a args="' + value.id + '" class="btn-edit  dueDate' + value.id + '" style="text-decoration: none;color:black">' + value.dueDate + '</a></td>';
+
+                        if (value.isCompleted) {
+                            // html += '<td><input type="checkbox" checked="checked">';
+                            html += '<td class = "isCompleted' + value.id + '">True</td>';
+                        }
+                        else {
+                            // html += '<td><input type="checkbox">';
+                            html += '<td class = "isCompleted' + value.id + '">False</td>';
+                        }
+                        // html += '<td>' + '<button type="button" args="'+ value.id +'" class="btn-edit btn btn-success">Edit</button></td>';
+                        html += '<td>' + '<button type="button" args="' + value.id + '" class="btn-delete btn btn-danger" >Delete</button></td>';
+                        html += '</tr>';
+                    });
+                    $('.tbody').html(html);
+                },
+                failure: function(response) {
+                    alert(response.responseText);
+                },
+                error: function(response) {
+                    alert(response.responseText);
+                }
+            });
+        });
+
+        $(document).on('click', '.btn-edit', function() {
+            var id = $(this).attr('args');
+            $.ajax({
+                type: "GET",
+                url: "/api/reminder/Detail",
+                data: { "id": id },
+                contentType: 'application/x-www-form-urlencoded',
+                dataType: "json",
+                success: function(response) {
+                    debugger
+                    $("#editname").val(response.name);
+                    $("#edittitle").val(response.title);
+                    $("#editdescription").val(response.description);
+                    $("#editdueDate").val(response.dueDate);
+                    $("#id").val(response.id);
+                    $("#btnUpdate").addClass("btn-update"); //add the btn-update class to modal save button so that we can make diferrent between add or update action
+
+                    $('#remindereditModel').modal('show');
+                }
+            });
+
+        });
+
+        $(document).on('click', '.btn-delete', function() {
+            var id = $(this).attr('args');
+            $.ajax({
+                type: "POST",
+                url: "/api/reminder/Delete",
+                data: { "id": id },
+                contentType: 'application/x-www-form-urlencoded',
+                dataType: "json",
+                success: function(response) {
+                    $('table#reminderTable tr#' + id).remove();
+                }
+            });
+        });
+
+        $("#btnAdd").click(function() {
+            var html = '';
+            $.ajax({
+                type: "POST",
+                url: "/api/reminder/Create",
+                data: $('form').serialize(),
+                contentType: 'application/x-www-form-urlencoded',
+                dataType: "json",
+                success: function(value) {
+                   
+                    $('.replaceme' + value.id + '').html('Whatever <b>HTML</b> you want here.');
+                    $('#reminderModel').hide();
+
+                    $('.modal-backdrop').removeClass('modal-backdrop');
+                    $('.fade').removeClass('fade');
+                    $('.in').removeClass('in');
+                    html += '<tr id="' + value.id + '">';
+                    html += '<td><a args="' + value.id + '" class="btn-edit name' + value.id + '" style="text-decoration: none;color:black">' + value.name + '</a></td>';
+                    html += '<td><a args="' + value.id + '" class="btn-edit  title' + value.id + '" style="text-decoration: none;color:black">' + value.title + '</a></td>';
+                    html += '<td><a args="' + value.id + '" class="btn-edit  description' + value.id + '" style="text-decoration: none;color:black">' + value.description + '</a></td>';
+                    html += '<td><a args="' + value.id + '" class="btn-edit  dueDate' + value.id + '" style="text-decoration: none;color:black">' + value.dueDate + '</a></td>';
+
+                    if (value.isCompleted) {
+                        // html += '<td><input type="checkbox" checked="checked">';
+                        html += '<td class = "isCompleted' + value.id + '">True</td>';
+                    }
+                    else {
+                        // html += '<td><input type="checkbox">';
+                        html += '<td>False</td>';
+                    }
+                    // html += '<td>' + '<button type="button" args="'+ value.id +'" class="btn-edit btn btn-success">Edit</button></td>';
+                    html += '<td>' + '<button type="button" args="' + value.id + '" class="btn-delete btn btn-danger">Delete</button></td>';
+                    html += '</tr>';
+
+                    $('.tbody').append(html);
+                }
+            });
+
+
+        });
+
+        $("#btnUpdate").click(function() {
+            var html = '';
+            $.ajax({
+                type: "POST",
+                url: "/api/reminder/Edit",
+                data: $('form').serialize(),
+                contentType: 'application/x-www-form-urlencoded',
+                dataType: "json",
+                success: function(value) {
+                    //$('.name' + value.id + '').replaceAll("");
+                    //$('.title' + value.id + '').replaceAll("");
+                    //$('.description' + value.id + '').replaceAll("");
+                    //$('.dueDate' + value.id + '').replaceAll("");
+                    //$('.isCompleted' + value.id + '').replaceAll("");
+
+
+                    $('.name' + value.id + '').html('<a args="' + value.id + '" class="btn-edit name' + value.id + '" style="text-decoration: none;color:black">' + value.name + '</a></td>');
+                    $('.title' + value.id + '').html('<a args="' + value.id + '" class="btn-edit title' + value.id + '" style="text-decoration: none;color:black">' + value.title + '</a></td>');
+                    $('.description' + value.id + '').html('<a args="' + value.id + '" class="btn-edit description' + value.id + '" style="text-decoration: none;color:black">' + value.description + '</a></td>');
+                    $('.dueDate' + value.id + '').html('<a args="' + value.id + '" class="btn-edit dueDate' + value.id + '" style="text-decoration: none;color:black">' + value.dueDate + '</a></td>');
+                     if (value.isCompleted) {
+                            // html += '<td><input type="checkbox" checked="checked">';
+                             $('.isCompleted' + value.id + '').html('True');
+                        }
+                        else {
+                            // html += '<td><input type="checkbox">';
+                             $('.isCompleted' + value.id + '').html('False');
+                        }
+                   
+                    $('#remindereditModel').hide();
+
+                    $('.modal-backdrop').removeClass('modal-backdrop');
+                    $('.fade').removeClass('fade');
+                    $('.in').removeClass('in');
+
+                }
+            });
+
+
+        });
+    </script>
+</div>
+
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#reminderModel">
+    Add a reminder
+</button>
