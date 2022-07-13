@@ -137,7 +137,7 @@
                             html += '<td class = "isCompleted' + value.id + '">False</td>';
                         }
                         // html += '<td>' + '<button type="button" args="'+ value.id +'" class="btn-edit btn btn-success">Edit</button></td>';
-                        html += '<td>' + '<button type="button" args="' + value.id + '" class="btn-delete btn btn-danger" >Delete</button></td>';
+                        html += '<td>' + '<button type="button" args="' + value.id + '" class="btn-delete btn btn-danger">Delete</button></td>';
                         html += '</tr>';
                     });
                     $('.tbody').html(html);
@@ -198,7 +198,6 @@
                 dataType: "json",
                 success: function(value) {
                    
-                    $('.replaceme' + value.id + '').html('Whatever <b>HTML</b> you want here.');
                     $('#reminderModel').hide();
 
                     $('.modal-backdrop').removeClass('modal-backdrop');
@@ -238,7 +237,7 @@
                 contentType: 'application/x-www-form-urlencoded',
                 dataType: "json",
                 success: function(value) {
-                    //$('.name' + value.id + '').replaceAll("");
+                    $('.name' + value.id + '').html("");
                     //$('.title' + value.id + '').replaceAll("");
                     //$('.description' + value.id + '').replaceAll("");
                     //$('.dueDate' + value.id + '').replaceAll("");
