@@ -30,7 +30,7 @@
                         <label for="DueDate">DueDate</label>
                         <input class="form-control" type="date" id="dueDate" name="dueDate" />
 
-                        <label for="DueDate">IsCompleted</label>
+                        <label for="IsCompleted">IsCompleted</label>
                         <input type="checkbox" id="isCompleted" name="isCompleted" checked="@(1 == 0)" />
                         <input type="hidden" id="id" name="id" />
                     </div>
@@ -66,9 +66,9 @@
                         <input type="text" class="form-control" id="editdescription" name="description" aria-describedby="descriptionHelp" placeholder="Enter description">
 
                         <label for="DueDate">DueDate</label>
-                        <input class="form-control" type="date" id="editdueDate" name="dueDate" />
+                        <input class="form-control" type="date" value="24-10-2022" id="editdueDate" name="dueDate" />
 
-                        <label for="DueDate">IsCompleted</label>
+                        <label for="IsCompleted">IsCompleted</label>
                         <input type="checkbox" id="editisCompleted" name="isCompleted" checked="@(1 == 0)" />
                         <input type="hidden" id="id" name="id" />
                     </div>
@@ -160,11 +160,12 @@
                 contentType: 'application/x-www-form-urlencoded',
                 dataType: "json",
                 success: function(response) {
-                    debugger
+                   
                     $("#editname").val(response.name);
                     $("#edittitle").val(response.title);
                     $("#editdescription").val(response.description);
                     $("#editdueDate").val(response.dueDate);
+                     $("#editisCompleted").prop("checked", response.isCompleted);;
                     $("#id").val(response.id);
                     $("#btnUpdate").addClass("btn-update"); //add the btn-update class to modal save button so that we can make diferrent between add or update action
 
