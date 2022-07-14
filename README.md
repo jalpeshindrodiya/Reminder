@@ -13,3 +13,6 @@ Add new controller with the name "Reminder".
 hit F5 to run the sample.
 Add "app.MapControllers();" in program file.
 Changes in controller,pages,layout(add jquery path)  for reminder app. 
+
+
+URL path : https://localhost:7101/index
