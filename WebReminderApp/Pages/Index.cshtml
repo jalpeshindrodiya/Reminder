@@ -164,7 +164,8 @@
                     $("#editname").val(response.name);
                     $("#edittitle").val(response.title);
                     $("#editdescription").val(response.description);
-                    $("#editdueDate").val(response.dueDate);
+                    $("#editdueDate").val(response.dueDate.substring(0,10));
+                   // $('.editdueDate').html($('#datePicker').val())
                     $("#editisCompleted").prop("checked", response.isCompleted);;
                     $("#id").val(response.id);
                     $("#btnUpdate").addClass("btn-update"); //add the btn-update class to modal save button so that we can make diferrent between add or update action
