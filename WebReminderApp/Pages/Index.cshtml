@@ -66,7 +66,7 @@
                         <input type="text" class="form-control" id="editdescription" name="description" aria-describedby="descriptionHelp" placeholder="Enter description">
 
                         <label for="DueDate">DueDate</label>
-                        <input class="form-control" type="date" value="24-10-2022" id="editdueDate" name="dueDate" />
+                        <input class="form-control" type="date" id="editdueDate" name="dueDate" />
 
                         <label for="IsCompleted">IsCompleted</label>
                         <input type="checkbox" id="editisCompleted" name="isCompleted" checked="@(1 == 0)" />
@@ -137,7 +137,7 @@
                             html += '<td class = "isCompleted' + value.id + '">False</td>';
                         }
                         // html += '<td>' + '<button type="button" args="'+ value.id +'" class="btn-edit btn btn-success">Edit</button></td>';
-                        html += '<td>' + '<button type="button" args="' + value.id + '" class="btn-delete btn btn-danger">Delete</button></td>';
+                        html += '<td>' + '<button type="button" args="' + value.id + '"  class="btn-delete btn btn-danger">Delete</button></td>';
                         html += '</tr>';
                     });
                     $('.tbody').html(html);
@@ -160,12 +160,12 @@
                 contentType: 'application/x-www-form-urlencoded',
                 dataType: "json",
                 success: function(response) {
-                   
+
                     $("#editname").val(response.name);
                     $("#edittitle").val(response.title);
                     $("#editdescription").val(response.description);
                     $("#editdueDate").val(response.dueDate);
-                     $("#editisCompleted").prop("checked", response.isCompleted);;
+                    $("#editisCompleted").prop("checked", response.isCompleted);;
                     $("#id").val(response.id);
                     $("#btnUpdate").addClass("btn-update"); //add the btn-update class to modal save button so that we can make diferrent between add or update action
 
@@ -175,18 +175,23 @@
 
         });
 
+
         $(document).on('click', '.btn-delete', function() {
-            var id = $(this).attr('args');
-            $.ajax({
-                type: "POST",
-                url: "/api/reminder/Delete",
-                data: { "id": id },
-                contentType: 'application/x-www-form-urlencoded',
-                dataType: "json",
-                success: function(response) {
-                    $('table#reminderTable tr#' + id).remove();
-                }
-            });
+            if (confirm("Are you sure?")) {
+                var id = $(this).attr('args');
+                $.ajax({
+                    type: "POST",
+                    url: "/api/reminder/Delete",
+                    data: { "id": id },
+                    contentType: 'application/x-www-form-urlencoded',
+                    dataType: "json",
+                    success: function(response) {
+                        $('table#reminderTable tr#' + id).remove();
+                        alert("Confirmed! Item deleted");
+                    }
+                });
+            }
+            else alert("Delete Action Canceled!");
         });
 
         $("#btnAdd").click(function() {
@@ -198,7 +203,7 @@
                 contentType: 'application/x-www-form-urlencoded',
                 dataType: "json",
                 success: function(value) {
-                   
+
                     $('#reminderModel').hide();
 
                     $('.modal-backdrop').removeClass('modal-backdrop');
@@ -241,7 +246,7 @@
                     $('.name' + value.id + '').html("");
                     //$('.title' + value.id + '').replaceAll("");
                     //$('.description' + value.id + '').replaceAll("");
-                    //$('.dueDate' + value.id + '').replaceAll("");
+                    $('.dueDate' + value.id + '').replaceAll("");
                     //$('.isCompleted' + value.id + '').replaceAll("");
 
 
@@ -249,15 +254,15 @@
                     $('.title' + value.id + '').html('<a args="' + value.id + '" class="btn-edit title' + value.id + '" style="text-decoration: none;color:black">' + value.title + '</a></td>');
                     $('.description' + value.id + '').html('<a args="' + value.id + '" class="btn-edit description' + value.id + '" style="text-decoration: none;color:black">' + value.description + '</a></td>');
                     $('.dueDate' + value.id + '').html('<a args="' + value.id + '" class="btn-edit dueDate' + value.id + '" style="text-decoration: none;color:black">' + value.dueDate + '</a></td>');
-                     if (value.isCompleted) {
-                            // html += '<td><input type="checkbox" checked="checked">';
-                             $('.isCompleted' + value.id + '').html('True');
-                        }
-                        else {
-                            // html += '<td><input type="checkbox">';
-                             $('.isCompleted' + value.id + '').html('False');
-                        }
-                   
+                    if (value.isCompleted) {
+                        // html += '<td><input type="checkbox" checked="checked">';
+                        $('.isCompleted' + value.id + '').html('True');
+                    }
+                    else {
+                        // html += '<td><input type="checkbox">';
+                        $('.isCompleted' + value.id + '').html('False');
+                    }
+
                     $('#remindereditModel').hide();
 
                     $('.modal-backdrop').removeClass('modal-backdrop');
