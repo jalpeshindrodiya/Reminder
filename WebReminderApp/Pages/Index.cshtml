@@ -4,7 +4,6 @@
     ViewData["Title"] = "Home page";
 }
 
-
 <!-- Modal -->
 <div class="modal fade" id="reminderModel" tabindex="-1" role="dialog" aria-labelledby="create" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -20,15 +19,19 @@
                     <div class="form-group">
                         <label for="name">Name</label>
                         <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp" placeholder="Enter your name">
-
+                        <span id="spname" class="alert-danger"></span></br>
+                        
                         <label for="title">Title</label>
                         <input type="text" class="form-control" id="title" name="title" aria-describedby="titleHelp" placeholder="Enter your title">
+                         <span id="sptitle" class="alert-danger"></span></br>
 
                         <label for="Description">Description</label>
                         <input type="text" class="form-control" id="description" name="description" aria-describedby="descriptionHelp" placeholder="Enter description">
+                        <span id="spdescription" class="alert-danger"></span></br>
 
                         <label for="DueDate">DueDate</label>
                         <input class="form-control" type="date" id="dueDate" name="dueDate" />
+                         <span id="spdueDate" class="alert-danger"></span></br>
 
                         <label for="IsCompleted">IsCompleted</label>
                         <input type="checkbox" id="isCompleted" name="isCompleted" checked="@(1 == 0)" />
@@ -58,15 +61,19 @@
                     <div class="form-group">
                         <label for="name">Name</label>
                         <input type="text" class="form-control" id="editname" name="name" aria-describedby="nameHelp" placeholder="Enter your name">
+                        <span id="speditname" class="alert-danger"></span></br>
 
                         <label for="title">Title</label>
                         <input type="text" class="form-control" id="edittitle" name="title" aria-describedby="titleHelp" placeholder="Enter your title">
+                        <span id="spedittitle" class="alert-danger"></span></br>
 
                         <label for="Description">Description</label>
                         <input type="text" class="form-control" id="editdescription" name="description" aria-describedby="descriptionHelp" placeholder="Enter description">
+                        <span id="speditdescription" class="alert-danger"></span></br>
 
                         <label for="DueDate">DueDate</label>
                         <input class="form-control" type="date" id="editdueDate" name="dueDate" />
+                        <span id="speditdueDate" class="alert-danger"></span></br>
 
                         <label for="IsCompleted">IsCompleted</label>
                         <input type="checkbox" id="editisCompleted" name="isCompleted" checked="@(1 == 0)" />
@@ -152,7 +159,9 @@
         });
 
         $(document).on('click', '.btn-edit', function() {
+           
             var id = $(this).attr('args');
+            
             $.ajax({
                 type: "GET",
                 url: "/api/reminder/Detail",
@@ -160,7 +169,6 @@
                 contentType: 'application/x-www-form-urlencoded',
                 dataType: "json",
                 success: function(response) {
-
                     $("#editname").val(response.name);
                     $("#edittitle").val(response.title);
                     $("#editdescription").val(response.description);
@@ -196,6 +204,44 @@
         });
 
         $("#btnAdd").click(function() {
+            if($("#name").val() == '')
+            {
+                $("#spname").text("Name is required");
+                return true;
+            }
+            else
+            {
+                $("#spname").text("");
+            }
+            
+            if($("#title").val() == '')
+            {
+                $("#sptitle").text("Title is required");
+                 return true;
+            }
+            else
+            {
+                $("#sptitle").text("");
+            }
+            if($("#description").val() == '')
+            {
+                $("#spdescription").text("Description is required");
+                 return true;
+            }
+            else
+            {
+                $("#spdescription").text("");
+            }
+            if($("#dueDate").val() == '')
+            {
+                $("#spdueDate").text("dueDate is required");
+                 return true;
+            }
+            else
+            {
+                $("#spdueDate").text("");
+            }
+            
             var html = '';
             $.ajax({
                 type: "POST",
@@ -204,9 +250,7 @@
                 contentType: 'application/x-www-form-urlencoded',
                 dataType: "json",
                 success: function(value) {
-
                     $('#reminderModel').hide();
-
                     $('.modal-backdrop').removeClass('modal-backdrop');
                     $('.fade').removeClass('fade');
                     $('.in').removeClass('in');
@@ -229,6 +273,10 @@
                     html += '</tr>';
 
                     $('.tbody').append(html);
+                    $("#name").val('');
+                    $("#title").val('');
+                    $("#description").val('');
+                    $("#dueDate").val('');
                 }
             });
 
@@ -236,6 +284,43 @@
         });
 
         $("#btnUpdate").click(function() {
+             if($("#editname").val() == '')
+            {
+                $("#speditname").text("Name is required");
+                return true;
+            }
+            else
+            {
+                $("#speditname").text("");
+            }
+            
+            if($("#edittitle").val() == '')
+            {
+                $("#spedittitle").text("Title is required");
+                 return true;
+            }
+            else
+            {
+                $("#spedittitle").text("");
+            }
+            if($("#editdescription").val() == '')
+            {
+                $("#speditdescription").text("Description is required");
+                 return true;
+            }
+            else
+            {
+                $("#speditdescription").text("");
+            }
+            if($("#editdueDate").val() == '')
+            {
+                $("#speditdueDate").text("dueDate is required");
+                 return true;
+            }
+            else
+            {
+                $("#speditdueDate").text("");
+            }
             var html = '';
             $.ajax({
                 type: "POST",
