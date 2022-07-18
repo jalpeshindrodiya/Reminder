@@ -16,3 +16,6 @@ Changes in controller,pages,layout(add jquery path)  for reminder app.
 
 
 URL path : https://localhost:7101/index
+
+
+I have implemented MINImal API and applied on create/detail/delet functionality, using model bind data for first time as per instruction.
