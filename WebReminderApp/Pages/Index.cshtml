@@ -1,7 +1,9 @@
 ﻿@page
+@using WebReminderApp.Database
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
+    var reminderData = (List<Reminders>)ViewData["RemindersData"];
 }
 
 <!-- Modal -->
@@ -20,10 +22,10 @@
                         <label for="name">Name</label>
                         <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp" placeholder="Enter your name">
                         <span id="spname" class="alert-danger"></span></br>
-                        
+
                         <label for="title">Title</label>
                         <input type="text" class="form-control" id="title" name="title" aria-describedby="titleHelp" placeholder="Enter your title">
-                         <span id="sptitle" class="alert-danger"></span></br>
+                        <span id="sptitle" class="alert-danger"></span></br>
 
                         <label for="Description">Description</label>
                         <input type="text" class="form-control" id="description" name="description" aria-describedby="descriptionHelp" placeholder="Enter description">
@@ -31,7 +33,7 @@
 
                         <label for="DueDate">DueDate</label>
                         <input class="form-control" type="date" id="dueDate" name="dueDate" />
-                         <span id="spdueDate" class="alert-danger"></span></br>
+                        <span id="spdueDate" class="alert-danger"></span></br>
 
                         <label for="IsCompleted">IsCompleted</label>
                         <input type="checkbox" id="isCompleted" name="isCompleted" checked="@(1 == 0)" />
@@ -92,7 +94,7 @@
     <h1 class="display-4">ReminderList</h1>
     <table class="table table-bordered" id="reminderTable">
         <thead>
-            <tr>
+            <tr style="background-color:grey;border:none;">
                 <th>
                     Name
                 </th>
@@ -108,77 +110,95 @@
                 <th>
                     IsCompleted
                 </th>
-                <th>
+                <th colspan="2">
                     Actions
                 </th>
             </tr>
         </thead>
         <tbody class="tbody">
+            @foreach (var reminder in reminderData)
+            {
+                <tr id="@reminder.Id">
+                    <td>@reminder.Name</td>
+                    <td>@reminder.Title</td>
+                    <td>@reminder.Description</td>
+                    <td>@reminder.DueDate</td>
+                    @if (reminder.IsCompleted)
+                    {
+                        <td class="isCompleted">True</td>
+                    }
+                    else
+                    {
+                        <td class="isCompleted">False</td>
+                    }
+                    <td><button type="button" args="@reminder.Id" class="btn-edit btn btn-success">Edit</button></td>
+                    <td><button type="button" args="@reminder.Id" class="btn-delete btn btn-danger">Delete</button></td>
+
+                </tr>
+            }
         </tbody>
     </table>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script type="text/javascript">
-        $(function() {
-            $.ajax({
-                type: "GET",
-                url: "/api/reminder/RemenderList",
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function(result) {
-                    debugger
+        //$(function() {
+        //    $.ajax({
+        //        type: "GET",
+        //        //url: "/api/reminder/RemenderList",
+        //        url: "/api/RemenderList",
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "json",
+        //        success: function(result) {
+        //            debugger
 
-                    var html = '';
-                    $.each(result, function(index, value) {
-                        html += '<tr id="' + value.id + '">';
-                        html += '<td><a args="' + value.id + '" class="btn-edit name' + value.id + '" style="text-decoration: none;color:black">' + value.name + '</a></td>';
-                        html += '<td><a args="' + value.id + '" class="btn-edit  title' + value.id + '" style="text-decoration: none;color:black">' + value.title + '</a></td>';
-                        html += '<td><a args="' + value.id + '" class="btn-edit  description' + value.id + '" style="text-decoration: none;color:black">' + value.description + '</a></td>';
-                        html += '<td><a args="' + value.id + '" class="btn-edit  dueDate' + value.id + '" style="text-decoration: none;color:black">' + value.dueDate + '</a></td>';
+        //            var html = '';
+        //            $.each(result, function(index, value) {
+        //                html += '<tr id="' + value.id + '">';
+        //                html += '<td><a args="' + value.id + '" class="btn-edit name' + value.id + '" style="text-decoration: none;color:black">' + value.name + '</a></td>';
+        //                html += '<td><a args="' + value.id + '" class="btn-edit  title' + value.id + '" style="text-decoration: none;color:black">' + value.title + '</a></td>';
+        //                html += '<td><a args="' + value.id + '" class="btn-edit  description' + value.id + '" style="text-decoration: none;color:black">' + value.description + '</a></td>';
+        //                html += '<td><a args="' + value.id + '" class="btn-edit  dueDate' + value.id + '" style="text-decoration: none;color:black">' + value.dueDate + '</a></td>';
 
-                        if (value.isCompleted) {
-                            // html += '<td><input type="checkbox" checked="checked">';
-                            html += '<td class = "isCompleted' + value.id + '">True</td>';
-                        }
-                        else {
-                            // html += '<td><input type="checkbox">';
-                            html += '<td class = "isCompleted' + value.id + '">False</td>';
-                        }
-                        // html += '<td>' + '<button type="button" args="'+ value.id +'" class="btn-edit btn btn-success">Edit</button></td>';
-                        html += '<td>' + '<button type="button" args="' + value.id + '"  class="btn-delete btn btn-danger">Delete</button></td>';
-                        html += '</tr>';
-                    });
-                    $('.tbody').html(html);
-                },
-                failure: function(response) {
-                    alert(response.responseText);
-                },
-                error: function(response) {
-                    alert(response.responseText);
-                }
-            });
-        });
+        //                if (value.isCompleted) {
+        //                    html += '<td class = "isCompleted' + value.id + '">True</td>';
+        //                }
+        //                else {
+        //                    html += '<td class = "isCompleted' + value.id + '">False</td>';
+        //                }
+        //                html += '<td>' + '<button type="button" args="'+ value.id +'" class="btn-edit btn btn-success">Edit</button></td>';
+        //                html += '<td>' + '<button type="button" args="' + value.id + '"  class="btn-delete btn btn-danger">Delete</button></td>';
+        //                html += '</tr>';
+        //            });
+        //            $('.tbody').html(html);
+        //        },
+        //        failure: function(response) {
+        //            alert(response.responseText);
+        //        },
+        //        error: function(response) {
+        //            alert(response.responseText);
+        //        }
+        //    });
+        //});
 
         $(document).on('click', '.btn-edit', function() {
-           
             var id = $(this).attr('args');
-            
             $.ajax({
                 type: "GET",
-                url: "/api/reminder/Detail",
+                url: "/api/Detail",
                 data: { "id": id },
                 contentType: 'application/x-www-form-urlencoded',
                 dataType: "json",
                 success: function(response) {
                     $("#editname").val(response.name);
+                    $("#editnamenew").val("<input type='text' class='form-control' id='editname' name='name' aria-describedby='nameHelp'' placeholder='Enter your name'/>")
                     $("#edittitle").val(response.title);
                     $("#editdescription").val(response.description);
-                    $("#editdueDate").val(response.dueDate.substring(0,10));
-                   // $('.editdueDate').html($('#datePicker').val())
+                    $("#editdueDate").val(response.dueDate.substring(0, 10));
+                    // $('.editdueDate').html($('#datePicker').val())
                     $("#editisCompleted").prop("checked", response.isCompleted);;
                     $("#id").val(response.id);
                     $("#btnUpdate").addClass("btn-update"); //add the btn-update class to modal save button so that we can make diferrent between add or update action
-
-                    $('#remindereditModel').modal('show');
+                    $("." + id).remove();
+                   // $('#remindereditModel').modal('show');
                 }
             });
 
@@ -189,8 +209,8 @@
             if (confirm("Are you sure?")) {
                 var id = $(this).attr('args');
                 $.ajax({
-                    type: "POST",
-                    url: "/api/reminder/Delete",
+                    type: "GET",
+                    url: "/api/Delete",
                     data: { "id": id },
                     contentType: 'application/x-www-form-urlencoded',
                     dataType: "json",
@@ -204,48 +224,41 @@
         });
 
         $("#btnAdd").click(function() {
-            if($("#name").val() == '')
-            {
+            if ($("#name").val() == '') {
                 $("#spname").text("Name is required");
                 return true;
             }
-            else
-            {
+            else {
                 $("#spname").text("");
             }
-            
-            if($("#title").val() == '')
-            {
+
+            if ($("#title").val() == '') {
                 $("#sptitle").text("Title is required");
-                 return true;
+                return true;
             }
-            else
-            {
+            else {
                 $("#sptitle").text("");
             }
-            if($("#description").val() == '')
-            {
+            if ($("#description").val() == '') {
                 $("#spdescription").text("Description is required");
-                 return true;
+                return true;
             }
-            else
-            {
+            else {
                 $("#spdescription").text("");
             }
-            if($("#dueDate").val() == '')
-            {
+            if ($("#dueDate").val() == '') {
                 $("#spdueDate").text("dueDate is required");
-                 return true;
+                return true;
             }
-            else
-            {
+            else {
                 $("#spdueDate").text("");
             }
-            
+
             var html = '';
             $.ajax({
                 type: "POST",
-                url: "/api/reminder/Create",
+                //url: "/api/reminder/Create",
+                 url: "/api/Create",
                 data: $('form').serialize(),
                 contentType: 'application/x-www-form-urlencoded',
                 dataType: "json",
@@ -268,7 +281,7 @@
                         // html += '<td><input type="checkbox">';
                         html += '<td>False</td>';
                     }
-                    // html += '<td>' + '<button type="button" args="'+ value.id +'" class="btn-edit btn btn-success">Edit</button></td>';
+                    html += '<td>' + '<button type="button" args="'+ value.id +'" class="btn-edit btn btn-success">Edit</button></td>';
                     html += '<td>' + '<button type="button" args="' + value.id + '" class="btn-delete btn btn-danger">Delete</button></td>';
                     html += '</tr>';
 
@@ -284,41 +297,33 @@
         });
 
         $("#btnUpdate").click(function() {
-             if($("#editname").val() == '')
-            {
+            if ($("#editname").val() == '') {
                 $("#speditname").text("Name is required");
                 return true;
             }
-            else
-            {
+            else {
                 $("#speditname").text("");
             }
-            
-            if($("#edittitle").val() == '')
-            {
+
+            if ($("#edittitle").val() == '') {
                 $("#spedittitle").text("Title is required");
-                 return true;
+                return true;
             }
-            else
-            {
+            else {
                 $("#spedittitle").text("");
             }
-            if($("#editdescription").val() == '')
-            {
+            if ($("#editdescription").val() == '') {
                 $("#speditdescription").text("Description is required");
-                 return true;
+                return true;
             }
-            else
-            {
+            else {
                 $("#speditdescription").text("");
             }
-            if($("#editdueDate").val() == '')
-            {
+            if ($("#editdueDate").val() == '') {
                 $("#speditdueDate").text("dueDate is required");
-                 return true;
+                return true;
             }
-            else
-            {
+            else {
                 $("#speditdueDate").text("");
             }
             var html = '';
