@@ -49,7 +49,7 @@
     </div>
 </div>
 
-<div class="modal fade model1" id="remindereditModel" tabindex="-1" role="dialog" aria-labelledby="remindereditlTitle" aria-hidden="true">
+@*<div class="modal fade model1" id="remindereditModel" tabindex="-1" role="dialog" aria-labelledby="remindereditlTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -70,7 +70,7 @@
                         <span id="spedittitle" class="alert-danger"></span></br>
 
                         <label for="Description">Description</label>
-                        <input type="text" class="form-control" id="editdescription" name="description" aria-describedby="descriptionHelp" placeholder="Enter description">
+                        <input type="text" class="form-control" id="editdescription" name="description" aria-describedby="descriptionHelp" placeholder="Enter description" />
                         <span id="speditdescription" class="alert-danger"></span></br>
 
                         <label for="DueDate">DueDate</label>
@@ -89,7 +89,7 @@
             </div>
         </div>
     </div>
-</div>
+</div>*@
 <div class="text-center">
     <h1 class="display-4">ReminderList</h1>
     <table class="table table-bordered" id="reminderTable">
@@ -119,17 +119,17 @@
             @foreach (var reminder in reminderData)
             {
                 <tr id="@reminder.Id">
-                    <td>@reminder.Name</td>
-                    <td>@reminder.Title</td>
-                    <td>@reminder.Description</td>
-                    <td>@reminder.DueDate</td>
+                    <td id="@reminder.Id">@reminder.Name</td>
+                    <td id="@reminder.Id">@reminder.Title</td>
+                    <td id="@reminder.Id">@reminder.Description</td>
+                    <td id="@reminder.Id">@reminder.DueDate</td>
                     @if (reminder.IsCompleted)
                     {
-                        <td class="isCompleted">True</td>
+                        <td id="@reminder.Id" class="isCompleted">True</td>
                     }
                     else
                     {
-                        <td class="isCompleted">False</td>
+                        <td id="@reminder.Id" class="isCompleted">False</td>
                     }
                     <td><button type="button" args="@reminder.Id" class="btn-edit btn btn-success">Edit</button></td>
                     <td><button type="button" args="@reminder.Id" class="btn-delete btn btn-danger">Delete</button></td>
@@ -181,6 +181,7 @@
 
         $(document).on('click', '.btn-edit', function() {
             var id = $(this).attr('args');
+            var html = '';
             $.ajax({
                 type: "GET",
                 url: "/api/Detail",
@@ -188,17 +189,31 @@
                 contentType: 'application/x-www-form-urlencoded',
                 dataType: "json",
                 success: function(response) {
-                    $("#editname").val(response.name);
-                    $("#editnamenew").val("<input type='text' class='form-control' id='editname' name='name' aria-describedby='nameHelp'' placeholder='Enter your name'/>")
-                    $("#edittitle").val(response.title);
-                    $("#editdescription").val(response.description);
-                    $("#editdueDate").val(response.dueDate.substring(0, 10));
-                    // $('.editdueDate').html($('#datePicker').val())
-                    $("#editisCompleted").prop("checked", response.isCompleted);;
-                    $("#id").val(response.id);
-                    $("#btnUpdate").addClass("btn-update"); //add the btn-update class to modal save button so that we can make diferrent between add or update action
-                    $("." + id).remove();
-                   // $('#remindereditModel').modal('show');
+                    html += '<form><td><input type="text" class="form-control" id="editname" name="name" aria-describedby="nameHelp" value="' + response.name + '"/></td>';
+                    html += '<td><input type="text" class="form-control" id="edittitle" name="title" aria-describedby="titleHelp" value="' + response.title + '" placeholder="Enter your title"/></td>';
+                    html += '<td><input type="text" class="form-control" id="editdescription" name="description" aria-describedby="descriptionHelp" value="' + response.description + '" placeholder="Enter description"/></td>';
+                    html += '<td><input class="form-control" type="date" id="editdueDate" value="' + response.dueDate.substring(0, 10) + '" name="dueDate" /></td>';
+
+                    if (response.isCompleted) {
+                        html += '<td><input type="checkbox" id="editisCompleted" name="isCompleted" checked/></td>';
+                    }
+                    else {
+                        html += '<td><input type="checkbox" id="editisCompleted" name="isCompleted"/></td>';
+                    }
+                    html += '<td>' + '<button type="button" args="' + response.id + '" id="btnUpdate" class="btn btn-update btn-primary">Update</button></td>';
+                    html += '<td>' + '<button type="button" args="' + response.id + '"  class="btn-delete btn btn-danger">Delete</button></td></form>';
+                    $('table#reminderTable tr#' + id).html(html);
+                    //$("#editname").val(response.name);
+                    //$("#editnamenew").val("<input type='text' class='form-control' id='editname' name='name' aria-describedby='nameHelp'' placeholder='Enter your name'/>")
+                    //$("#edittitle").val(response.title);
+                    //$("#editdescription").val(response.description);
+                    //$("#editdueDate").val(response.dueDate.substring(0, 10));
+                    //// $('.editdueDate').html($('#datePicker').val())
+                    //$("#editisCompleted").prop("checked", response.isCompleted);;
+                    //$("#id").val(response.id);
+                    //$("#btnUpdate").addClass("btn-update"); //add the btn-update class to modal save button so that we can make diferrent between add or update action
+                    //$("." + id).remove();
+                    // $('#remindereditModel').modal('show');
                 }
             });
 
@@ -258,7 +273,7 @@
             $.ajax({
                 type: "POST",
                 //url: "/api/reminder/Create",
-                 url: "/api/Create",
+                url: "/api/Create",
                 data: $('form').serialize(),
                 contentType: 'application/x-www-form-urlencoded',
                 dataType: "json",
@@ -281,7 +296,7 @@
                         // html += '<td><input type="checkbox">';
                         html += '<td>False</td>';
                     }
-                    html += '<td>' + '<button type="button" args="'+ value.id +'" class="btn-edit btn btn-success">Edit</button></td>';
+                    html += '<td>' + '<button type="button" args="' + value.id + '" class="btn-edit btn btn-success">Edit</button></td>';
                     html += '<td>' + '<button type="button" args="' + value.id + '" class="btn-delete btn btn-danger">Delete</button></td>';
                     html += '</tr>';
 
@@ -295,8 +310,10 @@
 
 
         });
-
-        $("#btnUpdate").click(function() {
+         $(document).on('click', '.btn-update', function() {
+             debugger
+       // $("#btnUpdate").click(function() {
+            alert("calling");
             if ($("#editname").val() == '') {
                 $("#speditname").text("Name is required");
                 return true;
@@ -329,7 +346,7 @@
             var html = '';
             $.ajax({
                 type: "POST",
-                url: "/api/reminder/Edit",
+                url: "/api/Edit",
                 data: $('form').serialize(),
                 contentType: 'application/x-www-form-urlencoded',
                 dataType: "json",
